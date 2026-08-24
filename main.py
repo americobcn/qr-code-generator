@@ -3,8 +3,17 @@ import argparse
 import qrcode
 
 
+def _escape(value: str) -> str:
+    return (
+        value.replace("\\", "\\\\")
+        .replace(";", "\\;")
+        .replace(",", "\\,")
+        .replace(":", "\\:")
+    )
+
+
 def build_wifi_payload(ssid: str, password: str, enc_type: str) -> str:
-    return f"WIFI:S:{ssid};T:{enc_type.upper()};P:{password};;"
+    return f"WIFI:S:{_escape(ssid)};T:{enc_type.upper()};P:{_escape(password)};;"
 
 
 def main(argv: list[str] | None = None) -> None:

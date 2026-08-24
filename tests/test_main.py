@@ -26,6 +26,18 @@ class BuildWifiPayloadTestCase(unittest.TestCase):
             "WIFI:S:red_abierta;T:NONE;P:;;",
         )
 
+    def test_ssid_with_special_characters_is_escaped(self):
+        self.assertEqual(
+            build_wifi_payload("My;Net,2", "clave123", "wpa"),
+            "WIFI:S:My\\;Net\\,2;T:WPA;P:clave123;;",
+        )
+
+    def test_password_with_special_characters_is_escaped(self):
+        self.assertEqual(
+            build_wifi_payload("MiRed", "a:b\\c", "wpa"),
+            "WIFI:S:MiRed;T:WPA;P:a\\:b\\\\c;;",
+        )
+
 
 class MainCliTestCase(unittest.TestCase):
     def test_generates_qr_file(self):
