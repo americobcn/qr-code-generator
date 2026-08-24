@@ -6,7 +6,7 @@ Status: approved
 ## Context
 
 The project is a single-script Python tool (`main.py`) that generates a Wi-Fi
-QR code image from hardcoded credentials (`WIFI:S:xeviestudi;T:WPA;P:...;;`)
+QR code image from hardcoded credentials (`WIFI:S:<ssid>;T:WPA;P:<password>;;`)
 using the `qrcode` and `pillow` libraries. It always writes `codigo_qr.png`.
 
 ## Goal
@@ -32,6 +32,8 @@ python main.py --ssid <name> --password <pass> [--type wpa|wep|none] [-o codigo_
 - The QR payload keeps the existing format exactly:
   `WIFI:S:{ssid};T:{TYPE};P:{password};;` where `{TYPE}` is the uppercased
   type (`WPA`, `WEP`, or `NONE`) and `{password}` is empty for `none`.
+- The currently hardcoded credentials in `main.py` are removed; no SSID,
+  password, or full payload string remains in the source code.
 - A missing `--password` when the type requires one produces an argparse error
   (usage message, exit code 2); no file is written.
 - On success the image is saved to the output path and a success message
