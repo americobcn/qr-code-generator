@@ -1,6 +1,10 @@
+import os
+import tempfile
 import unittest
+from pathlib import Path
 
-from main import build_wifi_payload
+import main as main_module
+from main import build_wifi_payload, main
 
 
 class BuildWifiPayloadTestCase(unittest.TestCase):
@@ -21,6 +25,30 @@ class BuildWifiPayloadTestCase(unittest.TestCase):
             build_wifi_payload("red_abierta", "", "none"),
             "WIFI:S:red_abierta;T:NONE;P:;;",
         )
+
+
+class MainCliTestCase(unittest.TestCase):
+    def test_generates_qr_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = os.path.join(tmp, "out.png")
+            main(["--ssid", "MiRed", "--password", "supersegura", "-o", out])
+            self.assertTrue(os.path.exists(out))
+
+    def test_missing_password_for_wpa_exits_with_error(self):
+        with self.assertRaises(SystemExit) as ctx:
+            main(["--ssid", "MiRed", "--type", "wpa"])
+        self.assertEqual(ctx.exception.code, 2)
+
+    def test_none_type_without_password_succeeds(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = os.path.join(tmp, "out.png")
+            main(["--ssid", "red_abierta", "--type", "none", "-o", out])
+            self.assertTrue(os.path.exists(out))
+
+    def test_no_hardcoded_credentials_in_source(self):
+        source = Path(main_module.__file__).read_text(encoding="utf-8")
+        self.assertNotIn("xeviestudi", source)
+        self.assertNotIn("xestud12345", source)
 
 
 if __name__ == "__main__":
