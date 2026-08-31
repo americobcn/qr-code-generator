@@ -12,3 +12,4 @@ wheels/
 # Others
 .superpowers
 ./docs
+.DS_Store
